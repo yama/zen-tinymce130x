@@ -4,33 +4,49 @@
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @version $Id: init_includes.php 3061 2009-07-01 21:01 yama $
  */
-if (!defined('IS_ADMIN_FLAG'))
+if (!defined('IS_ADMIN_FLAG')) die('Illegal Access');
+
+switch($_SESSION['language'])
 {
-	die('Illegal Access');
+	case 'japanese' : $language = 'ja'; break;
+	default         : $language = 'en';
 }
-$languages = zen_get_languages(); // todo
-print_r($languages);
-$plugins = 'safari,style,fullscreen,advimage,paste,advlink,media,contextmenu,table,advhr,inlinepopups';
-$theme_advanced_buttons1  = 'undo,redo,|,bold,forecolor,backcolor,formatselect,styleselect,fontsizeselect,code,|,fullscreen,help';
-$theme_advanced_buttons2  = 'image,media,link,unlink,anchor,|,bullist,numlist,|,blockquote,outdent,indent,|,';
-$theme_advanced_buttons2 .= 'justifyleft,justifycenter,justifyright,|,table,|,advhr,|,xstyleprops,removeformat,|,pastetext,pasteword';
+
+$plugins = 'advlist,save,autolink,lists,fullscreen,advimage,paste,advlink,media,contextmenu,table,advhr,inlinepopups';
+$theme_advanced_buttons1  = 'fontselect,fontsizeselect,formatselect,bold,italic,underline,strikethrough,|,sup,sub,|,copy,cut,pastetext,pasteword';
+$theme_advanced_buttons2  = 'justifyleft,justifycenter,justifyright,justifyfull,|,numlist,bullist,outdent,indent,|,forecolor,backcolor,|,advhr,link,image,media,table,code,|,fullscreen,|,help';
+$site_url = HTTP_CATALOG_SERVER . DIR_WS_CATALOG;
+$base_dir = DIR_WS_CATALOG;
 //<!-- load the main TinyMCE files -->
-$str  = '';
-$str .= '<script type="text/javascript" src="' . DIR_WS_CATALOG . 'extras/zenc_tinymce/jscripts/tiny_mce/tiny_mce.js"></script>' . PHP_EOL;
-$str .= '<script language="javascript" type="text/javascript">' . PHP_EOL;
-$str .= 'tinyMCE.init({' . PHP_EOL;
-$str .= '	theme : "advanced",' . PHP_EOL;
-$str .= '	mode : "textareas",' . PHP_EOL;
-$str .= '	plugins : "' . $plugins . '",'                                 . PHP_EOL;
-$str .= '	theme_advanced_buttons1 : "' . $theme_advanced_buttons1 . '",' . PHP_EOL;
-$str .= '	theme_advanced_buttons2 : "' . $theme_advanced_buttons2 . '",' . PHP_EOL;
-$str .= '	theme_advanced_buttons3 : "",'                                 . PHP_EOL;
-$str .= '	theme_advanced_toolbar_location : "top",'      . PHP_EOL;
-$str .= '	theme_advanced_toolbar_align : "left",'        . PHP_EOL;
-$str .= '	theme_advanced_statusbar_location : "bottom",' . PHP_EOL;
-$str .= '	theme_advanced_resizing : true,'               . PHP_EOL;
-$str .= '	theme_advanced_resize_horizontal : false,'     . PHP_EOL;
-$str .= '	content_css : "' . DIR_WS_CATALOG . 'extras/zenc_tinymce/add_style.css"' . PHP_EOL;
-$str .= '});' . PHP_EOL;
-$str .= '</script>' . PHP_EOL;
+$str  = <<< EOT
+<script type="text/javascript" src="{$site_url}extras/zenc_tinymce/tiny_mce/tiny_mce.js"></script>
+<script language="javascript" type="text/javascript">
+tinyMCE.init({
+theme                             : 'advanced',
+mode                              : 'textareas',
+language                          : '{$language}',
+plugins                           : '{$plugins}',
+width                             : '600',
+height                            : '350',
+accessibility_warnings            : false,
+document_base_url                 : '{$site_url}',
+relative_urls                     : false,
+remove_script_host                : false,
+force_br_newlines                 : true,
+force_p_newlines                  : false,
+forced_root_block                 : '',
+convert_fonts_to_spans            : true,
+valid_elements                    : '*[*]',
+theme_advanced_buttons1           : '{$theme_advanced_buttons1}',
+theme_advanced_buttons2           : '{$theme_advanced_buttons2}',
+theme_advanced_buttons3           : '',
+theme_advanced_toolbar_location   : 'top',
+theme_advanced_toolbar_align      : 'left',
+theme_advanced_statusbar_location : 'bottom',
+theme_advanced_resizing           : true,
+theme_advanced_resize_horizontal  : false,
+content_css                       : '{$base_dir}extras/zenc_tinymce/add_style.css'
+});
+</script>
+EOT;
 echo $str;
